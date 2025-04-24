@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static('public'));
 app.use(cookieParser());
 app.use(cors({
-  origin: [git'http://localhost:3000', 'http://localhost:3001']
+  origin: ['http://localhost:3000', 'http://localhost:3001']
 }));
 app.use(passport.initialize());
 const dbURI = "mongodb+srv://abdulbasidhussain:Super1234@cluster0.yflxqwa.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
