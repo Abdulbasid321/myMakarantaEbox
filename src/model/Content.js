@@ -18,7 +18,7 @@ const contentSchema = new mongoose.Schema({
   },
   fileUrl: {
     type: String,
-    required: true, // Cloudinary or local path
+    required: true,
   },
   description: String,
 }, { timestamps: true });

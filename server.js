@@ -1,58 +1,44 @@
+const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
 
-const express = require('express');
-require('dotenv').config();
-const mongoose = require('mongoose');
-const cors = require('cors');
-const passport = require('passport');
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
-const path = require('path');
+const connectDB = require("./config/mongoooseDB");
+require("dotenv").config({ path: "./config/config.env" });
+
+// environment variables
+const PORT = process.env.PORT || 3000;
+
+// app
 const app = express();
 
-const authRoutes = require('./src/routes/auth.routes');
-const contentRoutes = require('./src/routes/content.routes');
-const subjectRoutes = require('./src/routes/subject.routes');
-
-// Increase the JSON payload limit
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-
-app.use(express.static('public'));
-app.use(cookieParser());
-app.use(cors({
-  origin: [git'http://localhost:3000', 'http://localhost:3001']
-}));
-app.use(passport.initialize());
-const dbURI = "mongodb+srv://abdulbasidhussain:Super1234@cluster0.yflxqwa.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
-const PORT = process.env.PORT || 3000;
-mongoose.connect(dbURI)
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log('App running on port 3000');
-    });
-  })
-  .catch((err) => console.log('Connection error:', err));
-
-// GridFS Setup
-let gfs;
-mongoose.connection.once('open', () => {
-  gfs = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
-    bucketName: 'uploads'
-  });
-});
-
-
+// view engine
 app.set('view engine', 'ejs');
 
-app.get('/', (req, res) => {
-  res.json({ message: "Welcome to the API" });
+// MongoDB connection
+connectDB();
+
+// middlewares
+app.use(cors());
+app.options('*', cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static('public'));
+app.use(helmet());
+
+// routes
+const API_VERSION = '/api/v1'
+
+app.use(`${API_VERSION}/auths`, require('./src/routes/auth.routes'));
+app.use(`${API_VERSION}/lessons`, require('./src/routes/lesson.routes'));
+app.use(`${API_VERSION}/subjects`,require('./src/routes/subject.routes'));
+
+app.listen(PORT, () => {
+  console.log(`App running on port ${PORT}`);
 });
 
-app.use(authRoutes);
-app.use(contentRoutes);
-app.use(subjectRoutes);
+// Health Route
+app.get("/", (req, res) => {
+  res.send({message: "API is running", status: 200});
+});
 
 module.exports = app;
-
-
