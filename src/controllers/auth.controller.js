@@ -1,57 +1,68 @@
-const User = require('../model/User');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const { success, unauthorized, badRequest, notFound } = require('../helpers/AppResponse');
+const authService = require('../services/auth.service');
 
-// Register User
-exports.register = async (req, res) => {
-  const { username, email, password } = req.body;
-
+// Create a new user
+const createUser = async (req, res) => {
   try {
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
-    if (existingUser) {
-      return res.status(400).json({ error: 'Email or username already exists' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = await User.create({
-      username,
-      email,
-      password: hashedPassword,
-    });
-
-    res.status(201).json({ message: 'User registered successfully', user: newUser });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const { user, message, isSuccess } = await authService.createUser(req.body);
+    return isSuccess ? success(res, user, message) : badRequest(res, user, message);
+  } catch (error) {
+    return badRequest(res, error.message);
   }
 };
 
-// Login User
-exports.login = async (req, res) => {
-  const { identifier, password } = req.body;
-
+const login = async (req, res) => {
   try {
-    const user = await User.findOne({
-      $or: [{ email: identifier }, { username: identifier }]
-    });
-
-    if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET || 'poiuytrewqasdfghjklmnbvcxz',
-      { expiresIn: '24h' }
-    );
-
-    res.json({ token, user });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const { data, message, isSuccess } = await authService.login(req.body);
+    return success(res, data, message);
+  } catch (error) {
+    return badRequest(res, error.message);
   }
 };
+
+const verifyEmail = async (req, res) => {
+  try {
+    const { user, message, isSuccess } = await authService.verifyEmail(req.body);
+    return isSuccess ? success(res, user, message) : badRequest(res, user, message);
+  } catch (error) {
+    return badRequest(res, error.message);
+  }
+};
+
+const forgotPassword = async (req, res) => {
+    try {
+      const { user, message, isSuccess } = await authService.forgotPassword(req.params.userEmail);
+      return isSuccess ? success(res, user, message) : badRequest(res, user, message);
+    } catch (error) {
+      return badRequest(res, error.message);
+    }
+  };
+
+  const verifyCode = async (req, res) => {
+    try {
+      const { user, message, isSuccess } = await authService.verifyCode(req.params.otpCode);
+      return isSuccess ? success(res, user, message) : badRequest(res, user, message);
+    } catch (error) {
+      return badRequest(res, error.message);
+    }
+  };
+
+  const resetPassword = async (req, res) => {
+    try {
+      const { user, message, isSuccess } = await authService.resetPassword(req.body);
+      return isSuccess ? success(res, user, message) : badRequest(res, user, message);
+    } catch (error) {
+      return badRequest(res, error.message);
+    }
+  };
+
+
+
+module.exports = {
+   createUser,
+   login,
+   verifyEmail,
+   forgotPassword,
+   verifyCode,
+   resetPassword
+}

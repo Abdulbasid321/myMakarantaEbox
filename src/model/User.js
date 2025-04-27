@@ -1,55 +1,109 @@
-// const mongoose = require('mongoose');
-// const { isEmail } = require('validator')
+const mongoose = require("mongoose");
+const constants = require("../constants/index");
 
-// const userSchema = mongoose.Schema({
-//     fullName: {
-//         type: String,
-//         required: [true, 'please enter the student firstName'],
-//         lowerCase: true,
-//     },
-
-//     email: {
-//         type: String,
-//         required: [true, 'plaese enter the student email email'],
-//         unique: true,
-//         lowerCase: true,
-//         validate: [isEmail, 'please enter a valid email']
-//     },
-
-//     password: {
-//         type: String,
-//         required: [true, 'please enter your password'],
-//         minlength: [6, 'the minimun length for password is 6 characters'],
-//     },
-
-//     isSynced: { type: Boolean, default: false }, // mark if synced with server
-//     createdAt: { type: Date, default: Date.now }
-// });
-
-// const User = mongoose.model('user', userSchema);
-// module.exports = User;
-
-const mongoose = require('mongoose');
-const { isEmail } = require('validator')
-const userSchema = new mongoose.Schema({
-  username: {
+const UserSchema = new mongoose.Schema({
+  firstName: {
     type: String,
-    required: true,
-    unique: true,
-    trim: true,
+    required: [true, "First name is required"],
+  },
+  lasttName: {
+    type: String,
+    required: [true, "Last name is required"],
+  },
+  otherName: {
+    type: String,
+    required: false,
+  },
+  userName: {
+    type: String,
+    required: [true, "User name is required"],
+    unique: [true, "User name already exists"],
+    minlength: [3, "User name must be at least 3 characters long"],
+    maxlength: [20, "User name must be at most 15 characters long"],
+    match: [/^[a-zA-Z0-9_]+$/, "User name can only contain letters, numbers, and underscores"],
+  },
+  phoneNumber: {
+    type: String,
+    required: [true, "Phone number is required"],
+    unique: [true, "Phone number already exists"],
+    match: [/^\+?[0-9]{10,15}$/, "Please enter a valid phone number"],
+    minlength: [10, "Phone number must be at least 10 characters long"],
+    maxlength: [15, "Phone number must be at most 15 characters long"],
   },
   email: {
     type: String,
-    required: true,
-    unique: true,
+    required: [true, "Email is required"],
+    unique: [true, "Email already exists"],
     lowercase: true,
-    trim: true,
-    validate: [isEmail, 'please enter a valid email']
+    match: [/^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/, "Please enter a valid email"],
+  },
+  subjects: {
+    type: [ String ],
+    default: [ null ]
   },
   password: {
     type: String,
     required: true,
-  }
-}, { timestamps: true });
+  },
+  role: {
+    type: String,
+    enum: [...constants.roles],
+    required: true,
+    default: "user",
+  },
+  academicLevel: {
+    type: String,
+    enum: [...constants.academicLevel],
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: [...constants.userStatus],
+    required: true,
+    default: "active",
+  },
+  resetPasswordToken: {
+    type: String,
+    default: null,
+  },
+  resetPasswordExpires: {
+    type: Date,
+    default: null,
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  otp: {
+    type: String,
+    default: null,
+  },
+  otpExpires: {
+    type: Date,
+    default: null,
+  },
+}, { 
+    collection: "users",
+    timestamps: true,
+});
 
-module.exports = mongoose.model('User', userSchema);
+UserSchema.set("toJSON", {
+    virtuals: true,
+    transform: (doc, ret) => {
+        delete ret.__v;
+        if (ret.academicLevel) {
+            switch (ret.academicLevel) {
+                case value:
+                    
+                    break;
+            
+                default:
+                    break;
+            }
+            ret.resolvedAt = ret.resolvedAt.toISOString();
+        }
+    }
+});
+
+const User = mongoose.model("users", UserSchema);
+module.exports = User;

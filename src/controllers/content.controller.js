@@ -1,9 +1,9 @@
 // controllers/contentController.js
-const Content = require('../model/Content');
+const Lesson = require('../model/Lesson');
 const Subject = require('../model/Subject');
 
 // Controller method to upload content
-exports.uploadContent = async (req, res) => {
+exports.uploadLesson = async (req, res) => {
   const { subjectId, title, type, fileUrl, description } = req.body;
   try {
     // Check if the subject exists
@@ -12,15 +12,15 @@ exports.uploadContent = async (req, res) => {
       return res.status(404).json({ message: 'Subject not found' });
     }
 
-    const content = new Content({
+    const lesson = new Lesson({
       subjectId,
       title,
       type,
       fileUrl,
       description
     });
-    await content.save();
-    res.status(201).json({ message: 'Content uploaded successfully', content });
+    await lesson.save();
+    res.status(201).json({ message: 'Content uploaded successfully', lesson });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
