@@ -1,0 +1,30 @@
+const mongoose = require('mongoose');
+const { isEmail } = require('validator')
+
+const userSchema = mongoose.Schema({
+    fullName: {
+        type: String,
+        required: [true, 'please enter the student firstName'],
+        lowerCase: true,
+    },
+
+    email: {
+        type: String,
+        required: [true, 'plaese enter the student email email'],
+        unique: true,
+        lowerCase: true,
+        validate: [isEmail, 'please enter a valid email']
+    },
+
+    password: {
+        type: String,
+        required: [true, 'please enter your password'],
+        minlength: [6, 'the minimun length for password is 6 characters'],
+    },
+
+    isSynced: { type: Boolean, default: false }, // mark if synced with server
+    createdAt: { type: Date, default: Date.now }
+});
+
+const User = mongoose.model('user', userSchema);
+module.exports = User;
