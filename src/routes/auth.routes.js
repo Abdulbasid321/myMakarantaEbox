@@ -7,9 +7,9 @@ const { jwtVerify } = require('../middleware/jwtMiddleware');
 // Route to create a new user
 router.post('/register', authController.createUser);
 router.post('/login', authController.login);
-router.post('/verifyEmail', authController.verifyEmail);
+router.post('/verify-email', authController.verifyEmail);
 
-router.get('/forgot-password/:userEmail', authController.forgotPassword);
+router.get('/forgot-password/:email', authController.forgotPassword);
 router.post('/reset-password', authController.resetPassword);
 router.post('/verify-code', authController.verifyCode);
 

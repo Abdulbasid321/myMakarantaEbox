@@ -31,7 +31,7 @@ const createUser = async (userData) => {
           otp: user.otp,
           name: user.name,
         },
-        "../src/views/register-otp-send.ejs"
+        "../../views/register-otp-send.ejs"
     );
     user.password = undefined;
     user.otp = undefined;
@@ -118,7 +118,7 @@ const forgotPassword = async(email) => {
           otp: user.otp,
           name: user.name,
         },
-        "../src/views/reset-password.ejs"
+        "../../views/reset-password.ejs"
     );
     return { isSuccess: true, message: 'Reset password OTP sent to your email', user: user };
 }
