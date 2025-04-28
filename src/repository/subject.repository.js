@@ -8,7 +8,7 @@ exports.createSubject = async (subjectData) => {
 exports.getAllSubjects = async () => {
   return await SubjectModel.find().select('-__v'); // Select everything except for the __v field
 };
-
+ 
 exports.getSubjectById = async (id) => {
   return await SubjectModel.findById(id);
 };
