@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const connectDB = require('../config/mongoooseDB');
-const UserModel = require('../models/User.model');
+const UserModel = require('../model/User.model');
 const bcrypt = require('bcryptjs');
 
 let superAdminUsers = [

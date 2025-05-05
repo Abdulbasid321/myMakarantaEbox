@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../middlewares/uploadMiddleware');
+const upload = require('../middleware/upload');
 const lessonController = require('../controllers/lesson.controller');
 
 router.post('/uploadMedia', upload.single('media'), lessonController.uploadLesson);

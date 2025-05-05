@@ -19,7 +19,7 @@ connectDB();
 
 // middlewares
 app.use(cors());
-app.options('*', cors());
+// app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public'));
@@ -31,6 +31,7 @@ const API_VERSION = '/api/v1'
 app.use(`${API_VERSION}/auths`, require('./src/routes/auth.routes'));
 app.use(`${API_VERSION}/lessons`, require('./src/routes/lesson.routes'));
 app.use(`${API_VERSION}/subjects`,require('./src/routes/subject.routes'));
+app.use(`${API_VERSION}/users`,require('./src/routes/user.routes'));
 
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}`);
