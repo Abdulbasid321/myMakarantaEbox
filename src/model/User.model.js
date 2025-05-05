@@ -44,6 +44,7 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+    minlength: [6, "Password must be at least 6 characters long"],
   },
   role: {
     type: String,
@@ -72,7 +73,7 @@ const UserSchema = new mongoose.Schema({
   },
   isVerified: {
     type: Boolean,
-    default: false,
+    default: false
   },
   otp: {
     type: String,
@@ -87,23 +88,23 @@ const UserSchema = new mongoose.Schema({
     timestamps: true,
 });
 
-UserSchema.set("toJSON", {
-    virtuals: true,
-    transform: (doc, ret) => {
-        delete ret.__v;
-        if (ret.academicLevel) {
-            switch (ret.academicLevel) {
-                case value:
+// UserSchema.set("toJSON", {
+//     virtuals: true,
+//     transform: (doc, ret) => {
+//         delete ret.__v;
+//         if (ret.academicLevel) {
+//             switch (ret.academicLevel) {
+//                 case value:
                     
-                    break;
+//                     break;
             
-                default:
-                    break;
-            }
-            ret.resolvedAt = ret.resolvedAt.toISOString();
-        }
-    }
-});
+//                 default:
+//                     break;
+//             }
+//             ret.resolvedAt = ret.resolvedAt.toISOString();
+//         }
+//     }
+// });
 
 const User = mongoose.model("users", UserSchema);
 module.exports = User;
