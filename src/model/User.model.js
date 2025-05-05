@@ -37,10 +37,6 @@ const UserSchema = new mongoose.Schema({
     lowercase: true,
     match: [/^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/, "Please enter a valid email"],
   },
-  subjects: {
-    type: [ String ],
-    default: [ null ]
-  },
   password: {
     type: String,
     required: true,
@@ -50,7 +46,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: [...constants.roles],
     required: true,
-    default: "user",
+    default: "student",
   },
   academicLevel: {
     type: String,
@@ -62,14 +58,6 @@ const UserSchema = new mongoose.Schema({
     enum: [...constants.userStatus],
     required: true,
     default: "active",
-  },
-  resetPasswordToken: {
-    type: String,
-    default: null,
-  },
-  resetPasswordExpires: {
-    type: Date,
-    default: null,
   },
   isVerified: {
     type: Boolean,

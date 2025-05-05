@@ -1,7 +1,6 @@
 const constants = {};
 
 constants.roles = [
-    "user",
     "student",
     "instructor",
     "admin",
@@ -14,8 +13,17 @@ constants.userStatus = [
     "expelled"
 ];
 
-constants.subjects = [
-    
+
+constants.mediaType= [
+	"image",
+	"video",
+    "audio",
+	"file"
+];
+
+constants.mediaFor = [
+    "profile",
+    "subject"
 ];
 
 constants.academicLevel = [

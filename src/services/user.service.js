@@ -51,7 +51,7 @@ const updateUser = async (userId, updateData) => {
 
     updateData.updatedAt = new Date();
 
-    const newUser = await UserRepository.updateUserById(userId, updateData, { new: true });
+    const newUser = await UserRepository.updateUserById(userId, updateData, { new: true, runValidators: true });
 
     if (!newUser) {
         throw { isSuccess: false, message: 'User update failed', user: null };

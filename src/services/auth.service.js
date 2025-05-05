@@ -48,8 +48,6 @@ const verifyEmail = async (userData) => {
         throw { isSuccess: false, message: 'User not found', user: null };
     }
 
-    console.log(user.otp, otp);
-
     if(user.otp !== otp) {
         throw { isSuccess: false, message: 'Invalid OTP', user: null };
     }

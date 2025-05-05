@@ -1,30 +1,20 @@
-// controllers/subjectController.js
-const Subject = require('../model/Subject');
+const { success, unauthorized, badRequest, notFound } = require('../helpers/AppResponse');
+const subjectService = require('../services/subject.service');
 
-// Controller method to create a subject
-exports.createSubject = async (req, res) => {
-  const { name, description } = req.body;
-
+const getAllSubjects = async (req, res) => {
   try {
-    const existingSubject = await Subject.findOne({ name });
-    if (existingSubject) {
-      return res.status(400).json({ message: 'Subject already exists' });
-    }
-
-    const subject = new Subject({ name, description });
-    await subject.save();
-    res.status(201).json({ message: 'Subject created successfully', subject });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const { users, message, isSuccess } = await userService.getAllSubjects();
+    return isSuccess ? success(res, users, message) : badRequest(res, users, message);
+  } catch (error) {
+    return badRequest(res, error.message);
   }
 };
 
-// Controller method to get all subjects
-exports.getAllSubjects = async (req, res) => {
+const getSubject = async (req, res) => {
   try {
-    const subjects = await Subject.find();
-    res.json(subjects);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const  { user, message, isSuccess } = await userService.getSubject(req.params.userId);
+    return isSuccess ? success(res, user, message) : ((!user) && !isSuccess) ? notFound(res, user, message) : badRequest(res, user, message);
+  } catch (error) {
+    return badRequest(res, error.message);
   }
 };

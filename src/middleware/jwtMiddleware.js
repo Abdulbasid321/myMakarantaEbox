@@ -18,7 +18,7 @@ const jwtVerify = (req, res, next) => {
     req.user = verifiedToken;
     next();
   } catch (error) {
-    badRequest(res, 'Invalid token');
+    unauthorized(res, 'Invalid token');
   }
 };
 
