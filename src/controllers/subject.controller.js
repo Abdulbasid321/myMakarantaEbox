@@ -1,5 +1,5 @@
 const { success, unauthorized, badRequest, notFound } = require('../helpers/AppResponse');
-const subjectService = require('../services/subject.service');
+const subjectService = require('../services/subeject.service');
 
 const getAllSubjects = async (req, res) => {
   try {
