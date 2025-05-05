@@ -9,7 +9,7 @@ const createUser = async (userData) => {
     let { email, password } = userData;
     const existingUser = await UserRepository.getUser({email});
 
-    if(existingUser.isVerified) {
+    if(existingUser?.isVerified) {
         throw { isSuccess: false, message: 'Email is already taken', user: null };
     }
 
@@ -18,6 +18,7 @@ const createUser = async (userData) => {
     userData.otpExpires = new Date(Date.now() + 3 * 60 * 1000); // 3 minutes expiry
 
     userData.password = await hashPassword(password);
+    userData.userName = userData.userName.toLowerCase();
     const user = await UserRepository.createUser(userData);
     if(!user) {
         throw { isSuccess: false, message: 'User creation failed', user: null };
@@ -29,9 +30,9 @@ const createUser = async (userData) => {
         {
           email: user.email,
           otp: user.otp,
-          name: user.name,
+          name: user.userName,
         },
-        "../../views/register-otp-send.ejs"
+        "../src/views/register-otp-send.ejs"
     );
     user.password = undefined;
     user.otp = undefined;
@@ -46,6 +47,8 @@ const verifyEmail = async (userData) => {
     if(!user) {
         throw { isSuccess: false, message: 'User not found', user: null };
     }
+
+    console.log(user.otp, otp);
 
     if(user.otp !== otp) {
         throw { isSuccess: false, message: 'Invalid OTP', user: null };
@@ -63,6 +66,40 @@ const verifyEmail = async (userData) => {
     user.password = undefined;
 
     return { isSuccess: true, message: 'Email verified successfully', user: user };
+};
+
+const resendOtp = async (email) => {
+    let user = await UserRepository.getUser({email});
+
+    if(!user) {
+        throw { isSuccess: false, message: 'Invalid user email', user: null };
+    }
+
+    const otp = generateRandomSixDigitNumber();
+    user.otp = otp;
+    user.otpExpires = new Date(Date.now() + 3 * 60 * 1000); // 3 minutes expiry
+
+    user = await UserRepository.updateUserById(user._id, user, { new: true });
+    user.password = undefined;
+    if(!user) {
+        throw { isSuccess: false, message: 'User otp details update failed', user: null };
+    }
+    // send email on successful signup
+    await sendEmail(
+        user.email,
+        "Welcome to MyMakaranta e-box",
+        {
+          email: user.email,
+          otp: user.otp,
+          name: user.userName,
+        },
+        "../src/views/register-otp-send.ejs"
+    );
+
+    user.password = undefined;
+    user.otp = undefined;
+    user.otpExpires = undefined;
+    return { isSuccess: true, message: 'otp resent successfully', user: user };
 };
 
 const login = async (userData) => {
@@ -100,7 +137,8 @@ const login = async (userData) => {
 };
 
 const forgotPassword = async(email) => {
-    const user = UserRepository.getUser({email: email});
+    let user = await UserRepository.getUser({ email: email });
+
     if(!user) {
         throw { isSuccess: false, message: 'Invalid email address', user: null };
     }
@@ -108,6 +146,8 @@ const forgotPassword = async(email) => {
     const otp = generateRandomSixDigitNumber();
     user.otp = otp;
     user.otpExpires = new Date(Date.now() + 3 * 60 * 1000); // 3 minutes expiry
+    user = await UserRepository.updateUserById(user._id, user, { new: true });
+    user.password = undefined;
 
     // send email on successful signup
     await sendEmail(
@@ -116,9 +156,9 @@ const forgotPassword = async(email) => {
         {
           email: user.email,
           otp: user.otp,
-          name: user.name,
+          name: user.userName,
         },
-        "../../views/reset-password.ejs"
+        "../src/views/reset-password.ejs"
     );
     return { isSuccess: true, message: 'Reset password OTP sent to your email', user: user };
 }
@@ -154,6 +194,7 @@ module.exports = {
     createUser,
     login,
     verifyEmail,
+    resendOtp,
     forgotPassword,
     resetPassword
 }

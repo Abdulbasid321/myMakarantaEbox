@@ -2,18 +2,19 @@ const mongoose = require('mongoose');
 const connectDB = require('../config/mongoooseDB');
 const UserModel = require('../model/User.model');
 const bcrypt = require('bcryptjs');
+const { academicLevel } = require('../constants');
 
 let superAdminUsers = [
     {
         firstName: "Idris",
-        lasttName: "Mu'azu",
+        lastName: "Mu'azu",
         otherName: "Muhammad",
         userName: "iDi",
         phoneNumber: "08133457535",
         email: "idriscreate@gmail.com",
         password: 'idi21550',
+        academicLevel: "Undergraduate",
         role: "superAdmin",
-        department: "Engineering",
         isVerified: true,
 
     }
