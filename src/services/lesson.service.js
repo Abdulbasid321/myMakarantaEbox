@@ -35,7 +35,6 @@ exports.uploadLesson = async (req) => {
   return lesson;
 };
 
-
 exports.getAllMedia = async () => {
   return await lessonRepository.getAllMedia();
 };

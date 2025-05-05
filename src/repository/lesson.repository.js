@@ -1,22 +1,37 @@
-const LessonModel = require('../model/Lesson');
+const LessonModel = require('../model/Lesson.model');
 
-exports.createMedia = async (mediaData) => {
-  const mediaItem = new LessonModel(mediaData);
-  return await mediaItem.save();
+const createLesson = async (lessonData) => {
+    const Lesson = new LessonModel(lessonData);
+    await Lesson.save();
+    return Lesson;
 };
 
-exports.getAllMedia = async () => {
-  return await LessonModel.find().select('-__v');
+
+const getAllLessons = async () => {
+    return await LessonModel.find();
 };
 
-exports.findMediaByName = async (mediaName) => {
-  return await LessonModel.findOne({ mediaName });
+const getLessonById = async (lessonId) => {
+    return await LessonModel.findById(lessonId);
 };
 
-exports.findMediaById = async (id) => {
-  return await LessonModel.findById(id);
+const getLesson = async (query) => {
+    return await LessonModel.findOne(query);
 };
 
-exports.deleteMediaById = async (id) => {
-  return await LessonModel.findByIdAndDelete(id);
+const updateLessonById = async (lessonId, updateData, updateOptions) => {
+    return await LessonModel.findByIdAndUpdate(lessonId, updateData, updateOptions);
+};
+
+const updateLesson = async (query, updateData, updateOptions) => {
+    return await LessonModel.findOneAndUpdate (query, updateData, updateOptions);
+};
+
+module.exports = {
+    createLesson,
+    getLessonById,
+    getLesson,
+    updateLessonById,
+    updateLesson,
+    getAllLessons
 };

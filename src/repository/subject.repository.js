@@ -1,22 +1,37 @@
-const SubjectModel = require('../model/Subject.model'); 
+const SubjectModel = require('../model/Subject.model');
 
-exports.createSubject = async (subjectData) => {
-  const subject = new SubjectModel(subjectData);
-  return await subject.save();
+const createSubject = async (subjectData) => {
+    const subject = new SubjectModel(subjectData);
+    await subject.save();
+    return subject;
 };
 
-exports.getAllSubjects = async () => {
-  return await SubjectModel.find().select('-__v'); // Select everything except for the __v field
-};
- 
-exports.getSubjectById = async (id) => {
-  return await SubjectModel.findById(id);
+
+const getAllSubjects = async () => {
+    return await SubjectModel.find();
 };
 
-exports.updateSubject = async (id, updatedData) => {
-  return await SubjectModel.findByIdAndUpdate(id, updatedData, { new: true }); 
+const getSubjectById = async (subjectId) => {
+    return await SubjectModel.findById(subjectId);
 };
 
-exports.deleteSubject = async (id) => {
-  return await SubjectModel.findByIdAndDelete(id);
+const getSubject = async (query) => {
+    return await SubjectModel.findOne(query);
+};
+
+const updateSubjectById = async (subjectId, updateData, updateOptions) => {
+    return await SubjectModel.findByIdAndUpdate(subjectId, updateData, updateOptions);
+};
+
+const updateSubject = async (query, updateData, updateOptions) => {
+    return await SubjectModel.findOneAndUpdate (query, updateData, updateOptions);
+};
+
+module.exports = {
+    createSubject,
+    getSubjectById,
+    getSubject,
+    updateSubjectById,
+    updateSubject,
+    getAllSubjects
 };
