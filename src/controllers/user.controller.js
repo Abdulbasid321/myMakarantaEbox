@@ -24,7 +24,7 @@ const getUser = async (req, res) => {
 // Update a user by ID
 const updateUser = async (req, res) => {
   try {
-    const { user, message, isSuccess } = await userService.updateUser(req.params.id, req.body);
+    const { user, message, isSuccess } = await userService.updateUser(req.params.userId, req.body);
    return isSuccess ? success(res, user, message) : ((!user) && !isSuccess) ? notFound(res, user, message) : badRequest(res, user, message);
   } catch (error) {
     return badRequest(res, error.message);
