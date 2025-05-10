@@ -1,5 +1,6 @@
 // const UserModel = require('../models/user.model');
 const UserRepository = require('../repository/user.repository');
+const Subject = require('../model/Subject.model');
 const { hashPassword, verifyPassword } = require('../lib/bcryptfunc');
 const { genAccessToken, genRefreshToken } = require('../lib/jwtfunc');
 const generateRandomSixDigitNumber = require('../utils/randomNumberGen');
@@ -24,21 +25,101 @@ const createUser = async (userData) => {
         throw { isSuccess: false, message: 'User creation failed', user: null };
     }
     // send email on successful signup
-    await sendEmail(
-        user.email,
-        "Welcome to MyMakaranta e-box",
-        {
-          email: user.email,
-          otp: user.otp,
-          name: user.userName,
-        },
-        "../src/views/register-otp-send.ejs"
-    );
+    // await sendEmail(
+    //     user.email,
+    //     "Welcome to MyMakaranta e-box",
+    //     {
+    //       email: user.email,
+    //       otp: user.otp,
+    //       name: user.userName,
+    //     },
+    //     "../src/views/register-otp-send.ejs"
+    // );
     user.password = undefined;
     user.otp = undefined;
     user.otpExpires = undefined;
     return { isSuccess: true, message: 'User created successfully', user: user };
 };
+
+// const createUser = async (userData) => {
+//     const requiredFields = [
+//       "firstName",
+//       "lastName",
+//       "userName",
+//       "email",
+//       "password",
+//       "phoneNumber",
+//       "role",
+//       "academicLevel"
+//     ];
+  
+//     for (let field of requiredFields) {
+//       if (!userData[field]) {
+//        throw new Error(`${field} is required`);
+
+//       }
+//     }
+  
+//     // Now it's safe to normalize
+//     userData.userName = userData.userName.toLowerCase().trim();
+//     userData.email = userData.email.toLowerCase().trim();
+  
+  
+//     if (userData.phoneNumber) {
+//       userData.phoneNumber = String(userData.phoneNumber).trim();
+//     }
+  
+//     // Check if email already exists
+//     const existingUser = await UserRepository.getUser({ email: userData.email });
+  
+//     if (existingUser?.isVerified) {
+//       throw {
+//         isSuccess: false,
+//         message: "Email is already taken",
+//         user: null
+//       };
+//     }
+  
+//     // Generate OTP and hash password
+//     const otp = generateRandomSixDigitNumber();
+//     userData.otp = otp;
+//     userData.otpExpires = new Date(Date.now() + 3 * 60 * 1000);
+//     userData.password = await hashPassword(userData.password);
+  
+//     // Create user
+//     const user = await UserRepository.createUser(userData);
+//     if (!user) {
+//       throw {
+//         isSuccess: false,
+//         message: "User creation failed",
+//         user: null
+//       };
+//     }
+  
+//     // Send verification email
+//     await sendEmail(
+//       user.email,
+//       "Welcome to MyMakaranta e-box",
+//       {
+//         email: user.email,
+//         otp: user.otp,
+//         name: user.userName,
+//       },
+//       "../src/views/register-otp-send.ejs"
+//     );
+  
+//     // Clean up sensitive info before returning
+//     user.password = undefined;
+//     user.otp = undefined;
+//     user.otpExpires = undefined;
+  
+//     return {
+//       isSuccess: true,
+//       message: "User created successfully",
+//       user
+//     };
+//   };
+  
 
 const verifyEmail = async (userData) => {
     const { email, otp } = userData;
@@ -100,17 +181,52 @@ const resendOtp = async (email) => {
     return { isSuccess: true, message: 'otp resent successfully', user: user };
 };
 
-const login = async (userData) => {
-    let { email, password } = userData;
-    const user = await UserRepository.getUser({email: email});
+// const login = async (userData) => {
+//     let { email, password } = userData;
+//     const user = await UserRepository.getUser({email: email});
 
-    if(!user) {
+//     if(!user) {
+//         return { isSuccess: false, message: 'Invalid login details', user: null };
+//     }
+
+//     const isPasswordValid = await verifyPassword(password, user.password);
+//     if(!isPasswordValid) {
+//         throw { isSuccess: false, message: 'Invalid login details', user: null };
+//     }
+
+//     const payload = {
+//         id: user._id,
+//         email: user.email,
+//         role: user.role,
+//         status: user.status,
+//         firstName: user.firstName,
+//         lasttName: user.lasttName,
+//         userName: user.userName,
+//         phone: user.phone,
+//     };
+
+//     const accessToken = genAccessToken(payload);
+//     const refreshToken = genRefreshToken(payload);
+
+//     user.accessToken = accessToken;
+//     user.refreshToken = refreshToken;
+//     user.password = undefined;
+    
+//     return { message: 'Logged in successfully', data: { user, accessToken, refreshToken } };
+// };
+
+
+const login = async (userData) => {
+    const { email, password } = userData;
+    const user = await UserRepository.getUser({ email });
+
+    if (!user) {
         return { isSuccess: false, message: 'Invalid login details', user: null };
     }
 
     const isPasswordValid = await verifyPassword(password, user.password);
-    if(!isPasswordValid) {
-        throw { isSuccess: false, message: 'Invalid login details', user: null };
+    if (!isPasswordValid) {
+        return { isSuccess: false, message: 'Invalid login details', user: null };
     }
 
     const payload = {
@@ -119,7 +235,7 @@ const login = async (userData) => {
         role: user.role,
         status: user.status,
         firstName: user.firstName,
-        lasttName: user.lasttName,
+        lastName: user.lastName,
         userName: user.userName,
         phone: user.phone,
     };
@@ -130,8 +246,27 @@ const login = async (userData) => {
     user.accessToken = accessToken;
     user.refreshToken = refreshToken;
     user.password = undefined;
-    
-    return { message: 'Logged in successfully', data: { user, accessToken, refreshToken } };
+
+    // 🎯 Fetch all subjects based on the user's academicLevel
+    const subjects = await Subject.find({ academicLevel: user.academicLevel }) // assuming classId refers to academicLevel
+        .populate({
+            path: 'lessons',
+            populate: [
+                { path: 'pdf' },
+                { path: 'video' }
+            ]
+        })
+        .sort({ createdAt: -1 });
+
+    return {
+        message: 'Logged in successfully',
+        data: {
+            user,
+            subjects,
+            accessToken,
+            refreshToken
+        }
+    };
 };
 
 const forgotPassword = async(email) => {

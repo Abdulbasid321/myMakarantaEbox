@@ -2,13 +2,25 @@ const { success, unauthorized, badRequest, notFound } = require('../helpers/AppR
 const authService = require('../services/auth.service');
 
 // Create a new user
+// const createUser = async (req, res) => {
+//   try {
+//     const { user, message, isSuccess } = await authService.createUser(req.body);
+//     return isSuccess ? success(res, user, message) : badRequest(res, user, message);
+//   } catch (error) {
+//     console.log(error);
+//     return badRequest(res, error.message);
+//   }
+// };
 const createUser = async (req, res) => {
   try {
+    console.log("Incoming request body:", req.body); // 🔍 ADD THIS LINE
     const { user, message, isSuccess } = await authService.createUser(req.body);
     return isSuccess ? success(res, user, message) : badRequest(res, user, message);
   } catch (error) {
-    console.log(error);
-    return badRequest(res, error.message);
+    console.log("Error during user creation:", error);
+    // return badRequest(res, error.message);
+    return badRequest(res, null, error.message);
+
   }
 };
 
