@@ -1,4 +1,4 @@
-const Class = require('../models/Class');
+const Class = require('../model/Class.model');
 
 exports.createClass = async (data) => {
   return await Class.create(data);

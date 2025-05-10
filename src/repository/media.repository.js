@@ -37,7 +37,7 @@
 // };
 
 
-const MediaModel = require('../model/Media.model');
+const MediaModel = require('../model/media.model');
 
  exports.createMedia = async (mediaData) => {
   const media = new MediaModel(mediaData);
