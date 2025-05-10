@@ -1,4 +1,38 @@
-// models/Subject.js
+// // models/Subject.js
+// const mongoose = require('mongoose');
+
+// const SubjectSchema = new mongoose.Schema({
+//   title: {
+//     type: String,
+//     required: true,
+//     unique: true,
+//   },
+//   description: {
+//     type: String,
+//     required: true,
+//   },
+//   subjectCode: {
+//     type: String,
+//     required: true,
+//     unique: true,
+//   },
+//   image: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "medias",
+//     required: [false, "An image can belong to a Media"]
+//   },
+//   noOfLessons: {
+//     type: Number,
+//     required: true,
+//   }
+// }, { 
+//   collection: "subjects",
+//   timestamps: true,
+// });
+
+// const Subject = mongoose.model("subjects", SubjectSchema);
+// module.exports = Subject;
+
 const mongoose = require('mongoose');
 
 const SubjectSchema = new mongoose.Schema({
@@ -19,17 +53,21 @@ const SubjectSchema = new mongoose.Schema({
   image: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "medias",
-    required: [false, "An image can belong to a Media"]
+    required: false,
   },
   noOfLessons: {
     type: Number,
     required: true,
+  },
+  classId: { // 🔥 This line links the subject to a class
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "classes", // assumes you have or will create a Class model
+    required: true
   }
-}, { 
+}, {
   collection: "subjects",
   timestamps: true,
 });
 
 const Subject = mongoose.model("subjects", SubjectSchema);
 module.exports = Subject;
-

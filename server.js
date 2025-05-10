@@ -30,8 +30,10 @@ const API_VERSION = '/api/v1'
 
 app.use(`${API_VERSION}/auths`, require('./src/routes/auth.routes'));
 app.use(`${API_VERSION}/lessons`, require('./src/routes/lesson.routes'));
+app.use(`${API_VERSION}/media`, require('./src/routes/media.routes'));
 app.use(`${API_VERSION}/subjects`,require('./src/routes/subject.routes'));
 app.use(`${API_VERSION}/users`,require('./src/routes/user.routes'));
+app.use(`${API_VERSION}/creatQuiz`,require('./src/routes/quiz.routes'));
 
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}`);

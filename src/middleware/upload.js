@@ -6,7 +6,7 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: 'learning_app',
-    resource_type: 'auto'
+    resource_type: 'raw'
   }
 });
 

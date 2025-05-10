@@ -16,6 +16,10 @@ const LessonSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  order: {
+    type: Number,
+    required: true
+  },
   pdf: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "medias",
@@ -26,10 +30,12 @@ const LessonSchema = new mongoose.Schema({
     ref: "medias",
     required: [false, "A video can belong to a Media"]
   }
-}, { 
+}, {
   collection: "lessons",
   timestamps: true,
 });
 
-const Lesson = mongoose.model("lessons", LessonSchema);
-module.exports = Subject;
+// const Lesson = mongoose.model("lessons", LessonSchema);
+module.exports = mongoose.models.lessons || mongoose.model("lessons", LessonSchema);
+
+// module.exports = Lesson;
