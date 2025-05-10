@@ -33,32 +33,10 @@ exports.uploadMedia = async (req) => {
   return media;
 };
 
-// exports.uploadMedia = async (req, res) => {
-//   try {
-//     if (!req.file) {
-//       return res.status(400).json({ error: 'File upload failed. Please try again.' });
-//     }
+exports.getAllMedia = async () => {
+  return await mediaRepository.getAllMedia();
+};
 
-//     const { mediaType, mediaFor } = req.body;
-//     const { path } = req.file;
-
-//     const uploadedMedia = await cloudinary.uploader.upload(path, {
-//       resource_type: 'auto',
-//       folder: 'media',
-//     });
-
-//     if (!uploadedMedia || !uploadedMedia.secure_url) {
-//       return res.status(500).json({ error: 'Failed to upload file to Cloudinary.' });
-//     }
-
-//     const media = await mediaRepository.createMedia({
-//       mediaUrl: uploadedMedia.secure_url,
-//       mediaType,
-//       mediaFor,
-//     });
-
-//     return res.status(201).json({ media });
-//   } catch (err) {
-//     return res.status(500).json({ error: err.message });
-//   }
-// };
+exports.deleteMedia = async (id) => {
+  return await mediaRepository.deleteMedia(id);
+};

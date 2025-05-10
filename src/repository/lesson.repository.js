@@ -123,39 +123,3 @@ exports.deleteLesson = async (id) => {
   return await Lesson.findByIdAndDelete(id);
 };
 
-
-// const Lesson = require('../model/lesson.model');
-// // const Subject = require('../model/Subject.model');
-
-// exports.createLesson = async (data) => {
-//   const lesson = new Lesson(data);
-//   return await lesson.save();
-// };
-
-// exports.getAllLessons = async () => {
-//   return await Lesson.find()
-//     // .populate('subjects')
-//     .populate('pdf')
-//     .populate('video')
-//     .sort({ order: 1 });
-// };
-
-// exports.findLessonsBySubject = async (subjectId) => {
-//     return await Lesson.find({ subject: subjectId })
-//     //   .populate('subject')
-//       .populate('pdf')
-//       .populate('video')
-//       .sort({ order: 1 });
-//   };
-
-// exports.getLessonById = async (id) => {
-//   return await Lesson.findById(id)
-//     .populate('subject')
-//     .populate('pdf')
-//     .populate('video');
-// };
-
-// exports.deleteLesson = async (id) => {
-//   const lesson = await Lesson.findByIdAndDelete(id);
-//   return lesson;
-// };

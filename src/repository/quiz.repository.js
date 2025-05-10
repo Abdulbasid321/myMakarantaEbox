@@ -2,11 +2,11 @@ const QuizModel = require('../model/Quiz.model');
 const mongoose = require('mongoose');
 
 
-// const createQuiz = async (quizData) => {
-//     const quiz = new QuizModel(quizData);
-//     await quiz.save();
-//     return quiz;
-// };
+const createQuiz = async (quizData) => {
+    const quiz = new QuizModel(quizData);
+    await quiz.save();
+    return quiz;
+};
 
 const createManyQuizzes = async (quizzes) => {
     return await QuizModel.insertMany(quizzes);
@@ -33,17 +33,7 @@ const updateQuiz = async (query, updateData, updateOptions) => {
     return await QuizModel.findOneAndUpdate (query, updateData, updateOptions);
 };
 
-// const getQuizzesBySubject = async (subjectId) => {
-//     return await QuizModel.find({ subject: new mongoose.Types.ObjectId(subjectId) });
-//   };;
 
-// const getQuizzesBySubject = async (subjectId) => {
-//     if (!mongoose.Types.ObjectId.isValid(subjectId)) {
-//       throw new Error("Invalid subject ID format");
-//     }
-  
-//     return await QuizModel.find({ subject: new mongoose.Types.ObjectId(subjectId) });
-//   };
 
 const getQuizzesBySubject = async (subjectId) => {
     // Check if subjectId is valid
@@ -64,6 +54,8 @@ module.exports = {
     updateQuizById,
     updateQuiz,
     getAllQuizs,
-    getQuizzesBySubject
+    getQuizzesBySubject,
+
+    createQuiz
 };
 

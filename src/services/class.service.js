@@ -1,4 +1,4 @@
-const classRepository = require('../repository/class.repository');
+const classRepository = require('../repository/class.repostory');
 
 exports.createClass = async (data) => {
   return await classRepository.createClass(data);

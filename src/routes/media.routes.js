@@ -14,7 +14,7 @@ const lessonController = require('../controllers/media.controller');
 router.post('/uploadMedia', upload.single('media'), lessonController.uploadMedia);
 router.get('/getAllMedia', lessonController.getAllMedia);
 // router.get('/media/:filename', lessonController.serveMediaFile);
-// router.delete('/deleteMedia/:id', lessonController.deleteMedia);
+router.delete('/deleteMedia/:id', lessonController.deleteMedia);
 
 module.exports = router;
 

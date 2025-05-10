@@ -39,16 +39,23 @@
 
 const MediaModel = require('../model/Media.model');
 
-const createMedia = async (mediaData) => {
+ exports.createMedia = async (mediaData) => {
   const media = new MediaModel(mediaData);
   return await media.save();
 };
 
-const getAllMedias = async () => {
-  return await MediaModel.find().sort({ createdAt: 1 }); // sorted by creation date (oldest to newest)
+exports.getAllMedia = async () => {
+  return await MediaModel.find();
 };
 
-// Get media by its ID
+exports.deleteMedia = async (id) => {
+  return await MediaModel.findByIdAndDelete(id);
+};
+
+
+
+
+// // Get media by its ID
 const getMediaById = async (mediaId) => {
   return await MediaModel.findById(mediaId);
 };
@@ -68,11 +75,6 @@ const updateMedia = async (query, updateData, updateOptions = { new: true }) => 
   return await MediaModel.findOneAndUpdate(query, updateData, updateOptions);
 };
 
-module.exports = {
-  createMedia,
-  getAllMedias,
-  getMediaById,
-  getMedia,
-  updateMediaById,
-  updateMedia,
-};
+// module.exports = {
+//   createMedia,
+// };
