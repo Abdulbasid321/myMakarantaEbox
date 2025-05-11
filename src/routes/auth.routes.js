@@ -11,6 +11,8 @@ router.post('/verify-email', authController.verifyEmail);
 router.get('/resend-otp/:email', authController.resendOtp);
 
 router.get('/forgot-password/:email', authController.forgotPassword);
+// router.post('/forgot-password', authController.forgotPassword);
+
 router.post('/reset-password', authController.resetPassword);
 
 router.post('/verify-code', authController.verifyCode);
