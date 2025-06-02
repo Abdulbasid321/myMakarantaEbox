@@ -14,7 +14,7 @@ const createManyQuizzes = async (quizzes) => {
 
 
 const getAllQuizs = async () => {
-    return await QuizModel.find();
+    return await QuizModel.find().populate('subject');
 };
 
 const getQuizById = async (quizId) => {
@@ -42,7 +42,6 @@ const getQuizzesBySubject = async (subjectId) => {
     }
   
     // Query with the correct ObjectId format
-    // return await QuizModel.find({ subject: mongoose.Types.ObjectId(subjectId) });
     return await QuizModel.find({ subject: new mongoose.Types.ObjectId(subjectId) });
   };
   
