@@ -362,9 +362,9 @@ const resetPassword = async(userData) => {
         throw { isSuccess: false, message: 'Invalid email', user: null };
     }
 
-    if(user.otp !== otp) {
-        throw { isSuccess: false, message: 'Invalid OTP', user: null };
-    }
+    if (String(user.otp).trim() !== String(otp).trim()) {
+    throw { isSuccess: false, message: 'Invalid OTP', user: null };
+}
 
     if(user.otpExpires < Date.now()) {
         throw { isSuccess: false, message: 'OTP expired', user: null };
