@@ -52,23 +52,23 @@ const verifyEmail = async (req, res) => {
   }
 };
 
-const forgotPassword = async (req, res) => {
-    try {
-      const { user, message, isSuccess } = await authService.forgotPassword(req.params.email);
-      return isSuccess ? success(res, user, message) : badRequest(res, user, message);
-    } catch (error) {
-      return badRequest(res, error.message);
-    }
-  };
 // const forgotPassword = async (req, res) => {
-//   try {
-//     const { email } = req.body;
-//     const { user, message, isSuccess } = await authService.forgotPassword(email);
-//     return isSuccess ? success(res, user, message) : badRequest(res, user, message);
-//   } catch (error) {
-//     return badRequest(res, error.message);
-//   }
-// };
+//     try {
+//       const { user, message, isSuccess } = await authService.forgotPassword(req.params.email);
+//       return isSuccess ? success(res, user, message) : badRequest(res, user, message);
+//     } catch (error) {
+//       return badRequest(res, error.message);
+//     }
+//   };
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const { user, message, isSuccess } = await authService.forgotPassword(email);
+    return isSuccess ? success(res, user, message) : badRequest(res, user, message);
+  } catch (error) {
+    return badRequest(res, error.message);
+  }
+};
 
 
 // const forgotPassword = async (req, res) => {
