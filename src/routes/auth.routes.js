@@ -9,7 +9,6 @@ router.post('/register', authController.createUser);
 router.post('/login', authController.login);
 router.post('/verify-email', authController.verifyEmail);
 router.get('/resend-otp/:email', authController.resendOtp);
-
 // router.post('/forgot-password/:email', authController.forgotPassword);
 router.post('/forgot-password', authController.forgotPassword);
 

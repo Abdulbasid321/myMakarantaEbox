@@ -355,30 +355,58 @@ const forgotPassword = async(email) => {
 }
 
 const resetPassword = async(userData) => {
-    const { email, otp, newPassword } = userData;
-    let user = await UserRepository.getUser({email: email});
+  const { email, newPassword } = userData;
 
-    if(!user) {
-        throw { isSuccess: false, message: 'Invalid email', user: null };
-    }
+  // Get user by email
+  let user = await UserRepository.getUser({ email });
 
-    if (String(user.otp).trim() !== String(otp).trim()) {
-    throw { isSuccess: false, message: 'Invalid OTP', user: null };
-}
+  if (!user) {
+    throw { isSuccess: false, message: 'Invalid email', user: null };
+  }
 
-    if(user.otpExpires < Date.now()) {
-        throw { isSuccess: false, message: 'OTP expired', user: null };
-    }
+  // Ensure user is verified before allowing password reset
+  if (!user.isVerified) {
+    throw { isSuccess: false, message: 'Email not verified. Please verify your email first.', user: null };
+  }
 
-    user.password = await hashPassword(newPassword);
-    user.otp = null;
-    user.otpExpires = null;
+  // Update password
+  user.password = await hashPassword(newPassword);
 
-    user = await UserRepository.updateUserById(user._id, user, { new: true });
-    user.password = undefined;
+  // Clear any previous OTP-related data if needed
+  user.otp = null;
+  user.otpExpires = null;
 
-    return { isSuccess: true, message: 'Password reset successfully', user: user };
-}
+  user = await UserRepository.updateUserById(user._id, user, { new: true });
+
+  user.password = undefined; // don't expose password
+  return { isSuccess: true, message: 'Password reset successfully', user };
+};
+
+// const resetPassword = async(userData) => {
+//     const { email, otp, newPassword } = userData;
+//     let user = await UserRepository.getUser({email: email});
+
+//     if(!user) {
+//         throw { isSuccess: false, message: 'Invalid email', user: null };
+//     }
+
+//     if (String(user.otp).trim() !== String(otp).trim()) {
+//     throw { isSuccess: false, message: 'Invalid OTP', user: null };
+// }
+
+//     if(user.otpExpires < Date.now()) {
+//         throw { isSuccess: false, message: 'OTP expired', user: null };
+//     }
+
+//     user.password = await hashPassword(newPassword);
+//     user.otp = null;
+//     user.otpExpires = null;
+
+//     user = await UserRepository.updateUserById(user._id, user, { new: true });
+//     user.password = undefined;
+
+//     return { isSuccess: true, message: 'Password reset successfully', user: user };
+// }
 
 
 module.exports = {
