@@ -63,122 +63,6 @@ const createUser = async (userData) => {
   };
 };
 
-
-// const createUser = async (userData) => {
-//     let { email, password } = userData;
-//     const existingUser = await UserRepository.getUser({email});
-
-//     if(existingUser?.isVerified) {
-//         throw { isSuccess: false, message: 'Email is already taken', user: null };
-//     }
-
-//     const otp = generateRandomSixDigitNumber();
-//     userData.otp = otp;
-//     userData.otpExpires = new Date(Date.now() + 3 * 60 * 1000); // 3 minutes expiry
-
-//     userData.password = await hashPassword(password);
-//     userData.userName = userData.userName.toLowerCase();
-//     const user = await UserRepository.createUser(userData);
-//     if(!user) {
-//         throw { isSuccess: false, message: 'User creation failed', user: null };
-//     }
-//     // send email on successful signup
-//     await sendEmail(
-//         user.email,
-//         "Welcome to MyMakaranta e-box",
-//         {
-//           email: user.email,
-//           otp: user.otp,
-//           name: user.userName,
-//         },
-//         "../src/views/register-otp-send.ejs"
-//     );
-//     user.password = undefined;
-//     user.otp = undefined;
-//     user.otpExpires = undefined;
-//     return { isSuccess: true, message: 'User created successfully', user: user };
-// };
-
-// const createUser = async (userData) => {
-//     const requiredFields = [
-//       "firstName",
-//       "lastName",
-//       "userName",
-//       "email",
-//       "password",
-//       "phoneNumber",
-//       "role",
-//       "academicLevel"
-//     ];
-  
-//     for (let field of requiredFields) {
-//       if (!userData[field]) {
-//        throw new Error(`${field} is required`);
-
-//       }
-//     }
-  
-//     // Now it's safe to normalize
-//     userData.userName = userData.userName.toLowerCase().trim();
-//     userData.email = userData.email.toLowerCase().trim();
-  
-  
-//     if (userData.phoneNumber) {
-//       userData.phoneNumber = String(userData.phoneNumber).trim();
-//     }
-  
-//     // Check if email already exists
-//     const existingUser = await UserRepository.getUser({ email: userData.email });
-  
-//     if (existingUser?.isVerified) {
-//       throw {
-//         isSuccess: false,
-//         message: "Email is already taken",
-//         user: null
-//       };
-//     }
-  
-//     // Generate OTP and hash password
-//     const otp = generateRandomSixDigitNumber();
-//     userData.otp = otp;
-//     userData.otpExpires = new Date(Date.now() + 3 * 60 * 1000);
-//     userData.password = await hashPassword(userData.password);
-  
-//     // Create user
-//     const user = await UserRepository.createUser(userData);
-//     if (!user) {
-//       throw {
-//         isSuccess: false,
-//         message: "User creation failed",
-//         user: null
-//       };
-//     }
-  
-//     // Send verification email
-//     await sendEmail(
-//       user.email,
-//       "Welcome to MyMakaranta e-box",
-//       {
-//         email: user.email,
-//         otp: user.otp,
-//         name: user.userName,
-//       },
-//       "../src/views/register-otp-send.ejs"
-//     );
-  
-//     // Clean up sensitive info before returning
-//     user.password = undefined;
-//     user.otp = undefined;
-//     user.otpExpires = undefined;
-  
-//     return {
-//       isSuccess: true,
-//       message: "User created successfully",
-//       user
-//     };
-//   };
-  
-
 const verifyEmail = async (userData) => {
     const { email, otp } = userData;
     let user = await UserRepository.getUser({email: email});
@@ -238,41 +122,6 @@ const resendOtp = async (email) => {
     user.otpExpires = undefined;
     return { isSuccess: true, message: 'otp resent successfully', user: user };
 };
-
-// const login = async (userData) => {
-//     let { email, password } = userData;
-//     const user = await UserRepository.getUser({email: email});
-
-//     if(!user) {
-//         return { isSuccess: false, message: 'Invalid login details', user: null };
-//     }
-
-//     const isPasswordValid = await verifyPassword(password, user.password);
-//     if(!isPasswordValid) {
-//         throw { isSuccess: false, message: 'Invalid login details', user: null };
-//     }
-
-//     const payload = {
-//         id: user._id,
-//         email: user.email,
-//         role: user.role,
-//         status: user.status,
-//         firstName: user.firstName,
-//         lasttName: user.lasttName,
-//         userName: user.userName,
-//         phone: user.phone,
-//     };
-
-//     const accessToken = genAccessToken(payload);
-//     const refreshToken = genRefreshToken(payload);
-
-//     user.accessToken = accessToken;
-//     user.refreshToken = refreshToken;
-//     user.password = undefined;
-    
-//     return { message: 'Logged in successfully', data: { user, accessToken, refreshToken } };
-// };
-
 
 const login = async (userData) => {
     const { email, password } = userData;
@@ -372,7 +221,7 @@ const resetPassword = async(userData) => {
   // Update password
   user.password = await hashPassword(newPassword);
 
-  // Clear any previous OTP-related data if needed
+
   user.otp = null;
   user.otpExpires = null;
 
@@ -382,31 +231,6 @@ const resetPassword = async(userData) => {
   return { isSuccess: true, message: 'Password reset successfully', user };
 };
 
-// const resetPassword = async(userData) => {
-//     const { email, otp, newPassword } = userData;
-//     let user = await UserRepository.getUser({email: email});
-
-//     if(!user) {
-//         throw { isSuccess: false, message: 'Invalid email', user: null };
-//     }
-
-//     if (String(user.otp).trim() !== String(otp).trim()) {
-//     throw { isSuccess: false, message: 'Invalid OTP', user: null };
-// }
-
-//     if(user.otpExpires < Date.now()) {
-//         throw { isSuccess: false, message: 'OTP expired', user: null };
-//     }
-
-//     user.password = await hashPassword(newPassword);
-//     user.otp = null;
-//     user.otpExpires = null;
-
-//     user = await UserRepository.updateUserById(user._id, user, { new: true });
-//     user.password = undefined;
-
-//     return { isSuccess: true, message: 'Password reset successfully', user: user };
-// }
 
 
 module.exports = {

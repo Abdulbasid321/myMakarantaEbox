@@ -1,7 +1,7 @@
 const mediaService = require("../services/media.service");
 exports.uploadMedia = async (req, res) => {
   try {
-    const media = await mediaService.uploadMedia(req); // ✅ Pass full req
+    const media = await mediaService.uploadMedia(req); 
     res.status(201).json(media);
   } catch (err) {
     res.status(500).json({ error: err.message });

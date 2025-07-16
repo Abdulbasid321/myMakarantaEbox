@@ -1,20 +1,26 @@
 const { success, unauthorized, badRequest, notFound } = require('../helpers/AppResponse');
 const authService = require('../services/auth.service');
 
-// Create a new user
 // const createUser = async (req, res) => {
 //   try {
+//     console.log("Incoming request body:", req.body);
 //     const { user, message, isSuccess } = await authService.createUser(req.body);
 //     return isSuccess ? success(res, user, message) : badRequest(res, user, message);
 //   } catch (error) {
-//     console.log(error);
-//     return badRequest(res, error.message);
+//     console.log("Error during user creation:", error);
+//     // return badRequest(res, error.message);
+//     return badRequest(res, null, error.message);
+
 //   }
 // };
 const createUser = async (req, res) => {
   try {
-    console.log("Incoming request body:", req.body); // 🔍 ADD THIS LINE
-    const { user, message, isSuccess } = await authService.createUser(req.body);
+
+    const profilePic = req.file ? req.file.path : null;
+    const userData = { ...req.body, profilePic };
+
+    console.log("Incoming request body:", userData);
+    const { user, message, isSuccess } = await authService.createUser(userData);
     return isSuccess ? success(res, user, message) : badRequest(res, user, message);
   } catch (error) {
     console.log("Error during user creation:", error);
@@ -82,32 +88,32 @@ const forgotPassword = async (req, res) => {
 // };
 
 
-  const verifyCode = async (req, res) => {
-    try {
-      const { user, message, isSuccess } = await authService.verifyCode(req.params.otpCode);
-      return isSuccess ? success(res, user, message) : badRequest(res, user, message);
-    } catch (error) {
-      return badRequest(res, error.message);
-    }
-  };
+const verifyCode = async (req, res) => {
+  try {
+    const { user, message, isSuccess } = await authService.verifyCode(req.params.otpCode);
+    return isSuccess ? success(res, user, message) : badRequest(res, user, message);
+  } catch (error) {
+    return badRequest(res, error.message);
+  }
+};
 
-  const resetPassword = async (req, res) => {
-    try {
-      const { user, message, isSuccess } = await authService.resetPassword(req.body);
-      return isSuccess ? success(res, user, message) : badRequest(res, user, message);
-    } catch (error) {
-      return badRequest(res, error.message);
-    }
-  };
+const resetPassword = async (req, res) => {
+  try {
+    const { user, message, isSuccess } = await authService.resetPassword(req.body);
+    return isSuccess ? success(res, user, message) : badRequest(res, user, message);
+  } catch (error) {
+    return badRequest(res, error.message);
+  }
+};
 
 
 
 module.exports = {
-   createUser,
-   login,
-   verifyEmail,
-   resendOtp,
-   forgotPassword,
-   verifyCode,
-   resetPassword
+  createUser,
+  login,
+  verifyEmail,
+  resendOtp,
+  forgotPassword,
+  verifyCode,
+  resetPassword
 }
