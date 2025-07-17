@@ -1,5 +1,6 @@
 // const UserModel = require('../models/user.model');
 const UserRepository = require('../repository/user.repository');
+const cloudinary = require('cloudinary').v2;
 const { hashPassword, verifyPassword } = require('../lib/bcryptfunc');
 
 const getAllUsers = async () => {
@@ -18,7 +19,7 @@ const getUserById = async (userId) => {
     return { isSuccess: true, message: 'User retrieved successfully', user: user };
 };
 
-const updateUser = async (userId, updateData) => {
+// const updateUser = async (userId, updateData) => {
     const user = await UserRepository.getUserById(userId);
     if (!user) {
         throw { isSuccess: false, message: 'User not found', user: null };
@@ -60,7 +61,34 @@ const updateUser = async (userId, updateData) => {
     newUser.password = undefined;
 
     return { isSuccess: true, message: 'User updated successfully', user: newUser };
-};
+// };
+
+
+const updateUser = async (userId, updateData, profilePic) => {
+    const user = await UserRepository.getUserById(userId);
+    if (!user) {
+        throw { isSuccess: false, message: 'User not found', user: null };
+    }
+
+    if (updateData.email) {
+        const existingUser = await UserRepository.getUser({ email: updateData.email });
+        if (existingUser && existingUser._id.toString() !== userId) {
+            throw { isSuccess: false, message: 'This email is already registered.', user: null };
+        }
+    }
+
+    // Handle profilePic upload if provided
+    if (profilePic) {
+        const result = await cloudinary.uploader.upload(profilePic.path, {
+            folder: 'users',
+        });
+        updateData.profilePic = result.secure_url; // add the image URL to updateData
+    }
+
+    const updatedUser = await UserRepository.updateUser(userId, updateData);
+    return { isSuccess: true, message: 'User updated successfully', user: updatedUser };
+}
+
 
 module.exports = {
     getUserById,

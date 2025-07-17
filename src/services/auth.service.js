@@ -231,6 +231,31 @@ const resetPassword = async(userData) => {
   return { isSuccess: true, message: 'Password reset successfully', user };
 };
 
+// const resetPassword = async(userData) => {
+//     const { email, otp, newPassword } = userData;
+//     let user = await UserRepository.getUser({email: email});
+
+//     if(!user) {
+//         throw { isSuccess: false, message: 'Invalid email', user: null };
+//     }
+
+//     if (String(user.otp).trim() !== String(otp).trim()) {
+//     throw { isSuccess: false, message: 'Invalid OTP', user: null };
+// }
+
+//     if(user.otpExpires < Date.now()) {
+//         throw { isSuccess: false, message: 'OTP expired', user: null };
+//     }
+
+//     user.password = await hashPassword(newPassword);
+//     user.otp = null;
+//     user.otpExpires = null;
+
+//     user = await UserRepository.updateUserById(user._id, user, { new: true });
+//     user.password = undefined;
+
+//     return { isSuccess: true, message: 'Password reset successfully', user: user };
+// }
 
 
 module.exports = {

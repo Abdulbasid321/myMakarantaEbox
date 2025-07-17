@@ -1,26 +1,10 @@
 const { success, unauthorized, badRequest, notFound } = require('../helpers/AppResponse');
 const authService = require('../services/auth.service');
 
-// const createUser = async (req, res) => {
-//   try {
-//     console.log("Incoming request body:", req.body);
-//     const { user, message, isSuccess } = await authService.createUser(req.body);
-//     return isSuccess ? success(res, user, message) : badRequest(res, user, message);
-//   } catch (error) {
-//     console.log("Error during user creation:", error);
-//     // return badRequest(res, error.message);
-//     return badRequest(res, null, error.message);
-
-//   }
-// };
 const createUser = async (req, res) => {
   try {
-
-    const profilePic = req.file ? req.file.path : null;
-    const userData = { ...req.body, profilePic };
-
-    console.log("Incoming request body:", userData);
-    const { user, message, isSuccess } = await authService.createUser(userData);
+    console.log("Incoming request body:", req.body);
+    const { user, message, isSuccess } = await authService.createUser(req.body);
     return isSuccess ? success(res, user, message) : badRequest(res, user, message);
   } catch (error) {
     console.log("Error during user creation:", error);
@@ -29,6 +13,22 @@ const createUser = async (req, res) => {
 
   }
 };
+// const createUser = async (req, res) => {
+//   try {
+
+//     const profilePic = req.file ? req.file.path : null;
+//     const userData = { ...req.body, profilePic };
+
+//     console.log("Incoming request body:", userData);
+//     const { user, message, isSuccess } = await authService.createUser(userData);
+//     return isSuccess ? success(res, user, message) : badRequest(res, user, message);
+//   } catch (error) {
+//     console.log("Error during user creation:", error);
+//     // return badRequest(res, error.message);
+//     return badRequest(res, null, error.message);
+
+//   }
+// };
 
 const resendOtp = async (req, res) => {
   try {
