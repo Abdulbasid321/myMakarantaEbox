@@ -85,7 +85,9 @@ const updateUser = async (userId, updateData, profilePic) => {
         updateData.profilePic = result.secure_url; // add the image URL to updateData
     }
 
-    const updatedUser = await UserRepository.updateUser(userId, updateData);
+    // const updatedUser = await UserRepository.updateUser(userId, updateData);
+    const updatedUser = await UserRepository.updateUserById(userId, updateData, { new: true });
+
     return { isSuccess: true, message: 'User updated successfully', user: updatedUser };
 }
 

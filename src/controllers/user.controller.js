@@ -14,7 +14,7 @@ const getAllUsers = async (req, res) => {
 // Get a user by ID
 const getUser = async (req, res) => {
   try {
-    const  { user, message, isSuccess } = await userService.getUserById(req.params.userId);
+    const { user, message, isSuccess } = await userService.getUserById(req.params.userId);
     return isSuccess ? success(res, user, message) : ((!user) && !isSuccess) ? notFound(res, user, message) : badRequest(res, user, message);
   } catch (error) {
     return badRequest(res, error.message);
@@ -47,7 +47,7 @@ const updateUser = async (req, res) => {
 // };
 
 module.exports = {
-    getAllUsers,
-    getUser,
-    updateUser,
+  getAllUsers,
+  getUser,
+  updateUser,
 }
