@@ -14,7 +14,7 @@ router.get('/:userId', jwtVerify, userController.getUser);
 
 // Route to update a user by ID
 // router.put('/:userId', jwtVerify, userController.updateUser);
-router.put('/:userId', jwtVerify, upload.single("profilePic"), userController.updateUser);
+    router.put('/:userId', jwtVerify, upload.single("profilePic"), userController.updateUser);
 
 // Route to update a 
 // router.put('/change-password/:userId', jwtVerify, userController);
