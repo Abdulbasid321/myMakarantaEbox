@@ -5,14 +5,14 @@ const createUser = async (req, res) => {
   try {
     console.log("Incoming request body:", req.body);
     const { user, message, isSuccess } = await authService.createUser(req.body);
-    return isSuccess ? success(res, user, message) : badRequest(res, user, message);
+    return isSuccess ? success(res, user, message) : badRequest(res, message);
   } catch (error) {
     console.log("Error during user creation:", error);
     // return badRequest(res, error.message);
     return badRequest(res, null, error.message);
-
   }
 };
+
 // const createUser = async (req, res) => {
 //   try {
 
@@ -66,6 +66,7 @@ const verifyEmail = async (req, res) => {
 //       return badRequest(res, error.message);
 //     }
 //   };
+
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -76,7 +77,6 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-
 // const forgotPassword = async (req, res) => {
 //   try {
 //     const { email } = req.body;
@@ -86,7 +86,6 @@ const forgotPassword = async (req, res) => {
 //     return badRequest(res, error.message);
 //   }
 // };
-
 
 const verifyCode = async (req, res) => {
   try {

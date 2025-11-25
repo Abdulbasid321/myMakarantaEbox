@@ -46,3 +46,41 @@ AppResponse.badRequest = (res, message) => {
 }
 
 module.exports = AppResponse;
+
+
+
+
+
+// class AppResponse {
+//   static send(res, statusCode, status, message, data = null, error = null) {
+//     return res.status(statusCode).json({
+//       status,
+//       statusCode,
+//       message,
+//       data,
+//       error,
+//     });
+//   }
+
+//   static success(res, data, message = 'Request was successful') {
+//     return this.send(res, 200, 'success', message, data);
+//   }
+
+//   static error(res, error = 'Internal Server Error', message = 'An error occurred') {
+//     return this.send(res, 500, 'error', message, null, error);
+//   }
+
+//   static notFound(res, message = 'Resource not found') {
+//     return this.send(res, 404, 'error', message, null, 'Not Found');
+//   }
+
+//   static unauthorized(res, message = 'Unauthorized access') {
+//     return this.send(res, 401, 'error', message, null, 'Unauthorized');
+//   }
+
+//   static badRequest(res, message = 'Bad request') {
+//     return this.send(res, 400, 'error', message, null, 'Bad Request');
+//   }
+// }
+
+// module.exports = AppResponse;

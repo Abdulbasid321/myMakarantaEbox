@@ -8,7 +8,7 @@ const sendEmail = require('../lib/sendEmail');
 
 const createUser = async (userData) => {
   const { email, password } = userData;
-
+  
   const existingUser = await UserRepository.getUser({ email });
 
   if (existingUser?.isVerified) {
@@ -44,7 +44,7 @@ const createUser = async (userData) => {
     user.email,
     'Welcome to MyMakaranta e-box',
     {
-      email: user.email,
+        
       otp: user.otp,
       name: user.userName,
     },
