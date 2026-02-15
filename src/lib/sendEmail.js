@@ -14,26 +14,7 @@ const renderTemplate = (file, data) => {
   });
 };
 
-// const sendEmail = async (receiver, subject, data, templateId) => {
-//   const transporter = nodemailer.createTransport({
-//     service: 'gmail',
-//     auth: {
-//       user: process.env.SENDERS_EMAIL,
-//       pass: process.env.SENDERS_PASSWORD,
-//     },
-//   });
 
-//   const template = await renderTemplate(templateId, data);
-
-//   const mailOptions = {
-//     from: process.env.SENDERS_EMAIL, // sender address
-//     to: receiver, // list of receivers
-//     subject: subject, // Subject line
-//     html: template, // html body
-//   };
-
-//   return (await transporter.sendMail(mailOptions)).accepted;
-// };
 const sendEmail = async (receiver, subject, data, templatePath) => {
   try {
     const transporter = nodemailer.createTransport({

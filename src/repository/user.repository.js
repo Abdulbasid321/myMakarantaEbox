@@ -15,7 +15,7 @@ const getUserById = async (userId) => {
     return await UserModel.findById(userId);
 };
 
-const getUser = async (query) => {
+const  getUser = async (query) => {
     return await UserModel.findOne(query);
 };
 

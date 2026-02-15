@@ -26,12 +26,15 @@ constants.mediaFor = [
     "subject"
 ];
 
-constants.academicLevel = [    
-    "Primary 1",
-    "Primary 2",
-    "Primary 3",
-  
+constants.academicLevel = [
+  "Primary 1",
+  "Primary 2",
+  "Primary 3",
+  "Nursery 2",
+  "Undergraduate", 
+  "Postgraduate" 
 ];
+
 // constants.academicLevel = [
 //     "Undergraduate",
 //     "Postgraduate",
