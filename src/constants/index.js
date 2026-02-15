@@ -14,11 +14,11 @@ constants.userStatus = [
 ];
 
 
-constants.mediaType= [
-	"image",
-	"video",
+constants.mediaType = [
+    "image",
+    "video",
     "audio",
-	"file"
+    "file"
 ];
 
 constants.mediaFor = [
@@ -27,12 +27,22 @@ constants.mediaFor = [
 ];
 
 constants.academicLevel = [
-  "Primary 1",
-  "Primary 2",
-  "Primary 3",
-  "Nursery 2",
-  "Undergraduate", 
-  "Postgraduate" 
+    "Primary 1",
+    "Primary 2",
+    "Primary 3",
+    "Primary 4",
+    "Primary 5",
+    "Primary 6",
+    "Nursery 1",
+    "Nursery 2",
+    "JSS 1",
+    "JSS 2",
+    "JSS 3",
+    "SS 1",
+    "SS 2",
+    "SS 3",
+    "Undergraduate",
+    "Postgraduate"
 ];
 
 // constants.academicLevel = [

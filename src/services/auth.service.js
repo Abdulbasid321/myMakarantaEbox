@@ -6,15 +6,74 @@ const { genAccessToken, genRefreshToken } = require('../lib/jwtfunc');
 const generateRandomSixDigitNumber = require('../utils/randomNumberGen');
 const sendEmail = require('../lib/sendEmail');
 
+// const createUser = async (userData) => {
+//   const { email, password } = userData;
+  
+//   const existingUser = await UserRepository.getUser({ email });
+
+//   if (existingUser?.isVerified) {
+//     throw {
+//       isSuccess: false,
+//       message: 'Email is already taken',
+//       user: null,
+//     };
+//   }
+
+//   // ✅ Generate OTP as a string
+//   const otp = generateRandomSixDigitNumber(); // now returns string
+//   userData.otp = otp;
+//   userData.otpExpires = new Date(Date.now() + 3 * 60 * 1000); // 3 min expiry
+
+//   // ✅ Hash password and lowercase username
+//   userData.password = await hashPassword(password);
+//   userData.userName = userData.userName.toLowerCase();
+
+//   // ✅ Create user
+//   const user = await UserRepository.createUser(userData);
+
+//   if (!user) {
+//     throw {
+//       isSuccess: false,
+//       message: 'User creation failed',
+//       user: null,
+//     };
+//   }
+
+//   // ✅ Send email with OTP
+//   await sendEmail(
+//     user.email,
+//     'Welcome to MyMakaranta e-box',
+//     {
+        
+//       otp: user.otp,
+//       name: user.userName,
+//     },
+//     '../src/views/register-otp-send.ejs'
+//   );
+
+//   // ✅ Do NOT clear OTP here! (or only do this before sending response)
+//   user.password = undefined;
+//   user.otp = undefined;
+//   user.otpExpires = undefined;
+
+//   return {
+//     isSuccess: true,
+//     message: 'User created successfully',
+//     user,
+//   };
+// };
+
 const createUser = async (userData) => {
   const { email, password } = userData;
-  
+
+  // Check if the email already exists in the database
   const existingUser = await UserRepository.getUser({ email });
 
-  if (existingUser?.isVerified) {
+  if (existingUser) {
+    // If email already exists, throw a user-friendly error message
     throw {
       isSuccess: false,
-      message: 'Email is already taken',
+      message: 'This email is already registered. Please use a different email address.',
       user: null,
     };
   }
@@ -44,7 +103,6 @@ const createUser = async (userData) => {
     user.email,
     'Welcome to MyMakaranta e-box',
     {
-        
       otp: user.otp,
       name: user.userName,
     },
