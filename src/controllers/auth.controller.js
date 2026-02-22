@@ -1,17 +1,17 @@
 const { success, unauthorized, badRequest, notFound } = require('../helpers/AppResponse');
 const authService = require('../services/auth.service');
 
-const createUser = async (req, res) => {
-  try {
-    console.log("Incoming request body:", req.body);
-    const { user, message, isSuccess } = await authService.createUser(req.body);
-    return isSuccess ? success(res, user, message) : badRequest(res, message);
-  } catch (error) {
-    console.log("Error during user creation:", error);
-    // return badRequest(res, error.message);
-    return badRequest(res, null, error.message);
-  }
-};
+// const createUser = async (req, res) => {
+//   try {
+//     console.log("Incoming request body:", req.body);
+//     const { user, message, isSuccess } = await authService.createUser(req.body);
+//     return isSuccess ? success(res, user, message) : badRequest(res, message);
+//   } catch (error) {
+//     console.log("Error during user creation:", error);
+//     // return badRequest(res, error.message);
+//     return badRequest(res, null, error.message);
+//   }
+// };
 
 // const createUser = async (req, res) => {
 //   try {
@@ -29,7 +29,28 @@ const createUser = async (req, res) => {
 
 //   }
 // };
+const createUser = async (req, res) => {
+  try {
+    console.log("Incoming request body:", req.body);
+    const { user, message, isSuccess } = await authService.createUser(req.body);
+    
+    if (isSuccess) {
+      return success(res, user, message); // Success response
+    } else {
+      return badRequest(res, message); // Failure response (e.g., email exists)
+    }
+  } catch (error) {
+    console.log("Error during user creation:", error);
+    
+    // If the error contains a message, send it to the frontend
+    if (error.message) {
+      return badRequest(res, error.message); // Return the specific error message
+    }
 
+    // If no specific message is found, return a general error
+    return badRequest(res, 'An error occurred while creating your account. Please try again.');
+  }
+};
 const resendOtp = async (req, res) => {
   try {
     const { user, message, isSuccess } = await authService.resendOtp(req.params.email);

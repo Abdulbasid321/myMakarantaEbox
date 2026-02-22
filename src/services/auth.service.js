@@ -6,90 +6,51 @@ const { genAccessToken, genRefreshToken } = require('../lib/jwtfunc');
 const generateRandomSixDigitNumber = require('../utils/randomNumberGen');
 const sendEmail = require('../lib/sendEmail');
 
-// const createUser = async (userData) => {
-//   const { email, password } = userData;
-  
-//   const existingUser = await UserRepository.getUser({ email });
-
-//   if (existingUser?.isVerified) {
-//     throw {
-//       isSuccess: false,
-//       message: 'Email is already taken',
-//       user: null,
-//     };
-//   }
-
-//   // ✅ Generate OTP as a string
-//   const otp = generateRandomSixDigitNumber(); // now returns string
-//   userData.otp = otp;
-//   userData.otpExpires = new Date(Date.now() + 3 * 60 * 1000); // 3 min expiry
-
-//   // ✅ Hash password and lowercase username
-//   userData.password = await hashPassword(password);
-//   userData.userName = userData.userName.toLowerCase();
-
-//   // ✅ Create user
-//   const user = await UserRepository.createUser(userData);
-
-//   if (!user) {
-//     throw {
-//       isSuccess: false,
-//       message: 'User creation failed',
-//       user: null,
-//     };
-//   }
-
-//   // ✅ Send email with OTP
-//   await sendEmail(
-//     user.email,
-//     'Welcome to MyMakaranta e-box',
-//     {
-        
-//       otp: user.otp,
-//       name: user.userName,
-//     },
-//     '../src/views/register-otp-send.ejs'
-//   );
-
-//   // ✅ Do NOT clear OTP here! (or only do this before sending response)
-//   user.password = undefined;
-//   user.otp = undefined;
-//   user.otpExpires = undefined;
-
-//   return {
-//     isSuccess: true,
-//     message: 'User created successfully',
-//     user,
-//   };
-// };
 const createUser = async (userData) => {
   const { email, password } = userData;
 
-  // Check if the email already exists in the database
+  // Step 1: Check if the email already exists in the database
   const existingUser = await UserRepository.getUser({ email });
 
   if (existingUser) {
-    // If email already exists, throw a user-friendly error message
-    throw new Error('email is already registered');
+    // Step 2a: If email exists but is not verified, notify user to check email
+    if (!existingUser.isVerified) {
+      throw {
+        isSuccess: false,
+        message: 'This email is already registered but not verified. Please check your inbox for the verification link.',
+        user: null,
+      };
+    }
+
+    // Step 2b: If email exists and is verified, notify user it's already taken
+    throw {
+      isSuccess: false,
+      message: 'This email is already registered and verified. Please use a different email address.',
+      user: null,
+    };
   }
 
-  // ✅ Generate OTP as a string
-  const otp = generateRandomSixDigitNumber(); // now returns string
+  // Step 3: Generate OTP and set its expiration
+  const otp = generateRandomSixDigitNumber(); // OTP as a string
   userData.otp = otp;
   userData.otpExpires = new Date(Date.now() + 3 * 60 * 1000); // 3 min expiry
 
-  // ✅ Hash password and lowercase username
+  // Step 4: Hash password and standardize username
   userData.password = await hashPassword(password);
   userData.userName = userData.userName.toLowerCase();
 
-  // ✅ Create user
+  // Step 5: Create user in the database
   const user = await UserRepository.createUser(userData);
 
   if (!user) {
-    throw new Error('User creation failed');
+    throw {
+      isSuccess: false,
+      message: 'User creation failed. Please try again later.',
+      user: null,
+    };
   }
 
-  // ✅ Send email with OTP
+  // Step 6: Send OTP email to the newly registered user
   await sendEmail(
     user.email,
     'Welcome to MyMakaranta e-box',
@@ -100,74 +61,18 @@ const createUser = async (userData) => {
     '../src/views/register-otp-send.ejs'
   );
 
-  // ✅ Do NOT clear OTP here! (or only do this before sending response)
+  // Step 7: Clean up sensitive data before returning user
   user.password = undefined;
   user.otp = undefined;
   user.otpExpires = undefined;
 
+  // Return a structured success response
   return {
     isSuccess: true,
-    message: 'User created successfully',
+    message: 'User created successfully. Please check your email for OTP verification.',
     user,
   };
 };
-// const createUser = async (userData) => {
-//   const { email, password } = userData;
-
-//   // Check if the email already exists in the database
-//   const existingUser = await UserRepository.getUser({ email });
-
-//   if (existingUser) {
-//     // If email already exists, throw a user-friendly error message
-//     throw {
-//       isSuccess: false,
-//       message: 'This email is already registered. Please use a different email address.',
-//       user: null,
-//     };
-//   }
-
-//   // ✅ Generate OTP as a string
-//   const otp = generateRandomSixDigitNumber(); // now returns string
-//   userData.otp = otp;
-//   userData.otpExpires = new Date(Date.now() + 3 * 60 * 1000); // 3 min expiry
-
-//   // ✅ Hash password and lowercase username
-//   userData.password = await hashPassword(password);
-//   userData.userName = userData.userName.toLowerCase();
-
-//   // ✅ Create user
-//   const user = await UserRepository.createUser(userData);
-
-//   if (!user) {
-//     throw {
-//       isSuccess: false,
-//       message: 'User creation failed',
-//       user: null,
-//     };
-//   }
-
-//   // ✅ Send email with OTP
-//   await sendEmail(
-//     user.email,
-//     'Welcome to MyMakaranta e-box',
-//     {
-//       otp: user.otp,
-//       name: user.userName,
-//     },
-//     '../src/views/register-otp-send.ejs'
-//   );
-
-//   // ✅ Do NOT clear OTP here! (or only do this before sending response)
-//   user.password = undefined;
-//   user.otp = undefined;
-//   user.otpExpires = undefined;
-
-//   return {
-//     isSuccess: true,
-//     message: 'User created successfully',
-//     user,
-//   };
-// };
 
 const verifyEmail = async (userData) => {
     const { email, otp } = userData;
