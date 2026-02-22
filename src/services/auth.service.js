@@ -51,15 +51,15 @@ const createUser = async (userData) => {
   }
 
   // Step 6: Send OTP email to the newly registered user
-  await sendEmail(
-    user.email,
-    'Welcome to MyMakaranta e-box',
-    {
-      otp: user.otp,
-      name: user.userName,
-    },
-    '../src/views/register-otp-send.ejs'
-  );
+//   await sendEmail(
+//     user.email,
+//     'Welcome to MyMakaranta e-box',
+//     {
+//       otp: user.otp,
+//       name: user.userName,
+//     },
+//     '../src/views/register-otp-send.ejs'
+//   );
 
   // Step 7: Clean up sensitive data before returning user
   user.password = undefined;
